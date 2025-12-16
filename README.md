@@ -12,6 +12,10 @@ This is a modern, responsive E-Commerce web application built with React and Nod
 - Order history tracking.
 - Fully Dockerized.
 
+## 🔐 Default Credentials
+- **Username**: `admin`
+- **Password**: `admin`
+
 ## 🚀 Quick Start (Local)
 
 ### Backend

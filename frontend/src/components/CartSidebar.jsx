@@ -2,19 +2,28 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Trash2, CheckCircle, ShoppingCart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import api from '../api';
 
 const CartSidebar = () => {
     const { isOpen, toggleCart, cart, removeFromCart, total, clearCart } = useCart();
+    const { user } = useAuth();
+    const navigate = useNavigate();
     const [ordering, setOrdering] = useState(false);
 
     const handleCheckout = async () => {
+        if (!user) {
+            toggleCart();
+            navigate('/login');
+            return;
+        }
+
         setOrdering(true);
         try {
             await api.post('/orders', { items: cart, total });
             clearCart();
             toggleCart();
-            // Optionally navigate or show success
             alert('Order placed successfully!');
         } catch (e) {
             console.error(e);
@@ -88,7 +97,7 @@ const CartSidebar = () => {
                                 disabled={cart.length === 0 || ordering}
                                 className="w-full bg-primary text-white py-4 rounded-xl font-bold text-lg hover:bg-indigo-700 disabled:opacity-50 transition-all shadow-lg shadow-indigo-200 active:scale-95 flex justify-center items-center gap-2"
                             >
-                                {ordering ? 'Processing...' : <>Checkout <CheckCircle size={20} /></>}
+                                {ordering ? 'Processing...' : user ? <>Checkout <CheckCircle size={20} /></> : 'Login to Checkout'}
                             </button>
                         </div>
                     </motion.div>
